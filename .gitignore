@@ -1,0 +1,7 @@
+# Local audit-trail logs written by Claude Code skills (see root CLAUDE.md's
+# "every skill logs its runs" convention) — not part of the shipped repo.
+logs/
+
+# OS noise
+.DS_Store
+Thumbs.db

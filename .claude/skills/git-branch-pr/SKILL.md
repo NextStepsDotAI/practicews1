@@ -38,6 +38,41 @@ Examples: `feature/add-login-page`, `fix/null-pointer-in-parser`,
 If it's not obvious from context which `type` fits, or the description would
 be ambiguous, ask the user in one short question rather than guessing.
 
+## Logging
+
+This skill follows the repo-wide convention (see root `CLAUDE.md`): every
+run gets logged to `./logs/git-branch-pr/<uuid>.md`, relative to the repo
+root (`git rev-parse --show-toplevel`), so there's a record of what actually
+happened without having to dig through chat scrollback or git history later.
+
+At the **start** of a run, generate a fresh UUID —
+`node -e "console.log(require('crypto').randomUUID())"` (Node is available
+in this repo), or `[guid]::NewGuid().ToString()` in PowerShell as a fallback
+— and hold onto it for the log filename. Create `logs/git-branch-pr/` if it
+doesn't exist yet. Write the log file as the **last step** of the run (step
+8 below), once the outcome is known — including on partial failure, so a
+failed run is captured too, not just successful ones. Use this template:
+
+```markdown
+# git-branch-pr run — <uuid>
+
+- **Started:** <ISO 8601 timestamp>
+- **Branch:** <type>/<description>
+- **Base:** main @ <sha main was branched from>
+- **Status:** success | partial | failed
+
+## Steps taken
+<short bullet list of what actually happened, in order>
+
+## Result
+- Commit(s): <sha> — <first line of commit message>
+- Pushed to: origin/<branch> (or "not pushed" if the user declined)
+- Pull request: <url> (or "not created" / "declined")
+
+## Issues encountered
+<any errors, unexpected states, or recoveries — or "none">
+```
+
 ## Steps
 
 Work through these in order. Stop and confirm with the user before step 5 and
@@ -104,6 +139,10 @@ sanity check first, even though they asked for this workflow.
      descriptions, if one is configured.
 
 7. **Report back** with the PR URL once created (`gh pr create` prints it).
+
+8. **Write the run log** described above under "Logging", then let the user
+   know it was written (path is enough, no need to print the whole contents
+   unless they ask).
 
 ## Notes
 
