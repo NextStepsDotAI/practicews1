@@ -76,7 +76,7 @@ failed run is captured too, not just successful ones. Use this template:
 ## Steps
 
 Work through these in order. Stop and confirm with the user before step 5 and
-step 6 — pushing and opening a PR are visible to others and worth a quick
+step 7 — pushing and opening a PR are visible to others and worth a quick
 sanity check first, even though they asked for this workflow.
 
 1. **Check repo state.** Run `git status`. If there are uncommitted changes,
@@ -125,7 +125,24 @@ sanity check first, even though they asked for this workflow.
    interactive-auth workarounds; this is almost always the actual cause on a
    machine where `gh auth status` already shows a logged-in account.
 
-6. **Open the PR**, after confirming title/body with the user. Use the `gh`
+6. **Kick off a changelog entry.** Right after the push succeeds, dispatch
+   the `changelog-writer` subagent (Agent tool, `subagent_type:
+   changelog-writer`) with the branch name, base branch (`main`), and repo
+   root — it writes `changelog/<type>/<description>/<short-sha>.md` on its
+   own. Run it in the background (`run_in_background: true`) — nothing later
+   in this workflow depends on it, so there's no reason to block the PR step
+   waiting for it. Mention in the final report (step 9) that it's running
+   and will land shortly; don't fabricate its result before it actually
+   finishes.
+
+   Note: this agent type takes a moment to become dispatchable right after
+   its `.claude/agents/*.md` file is first created or edited in a session —
+   if `subagent_type: changelog-writer` is rejected as unknown, fall back to
+   `subagent_type: general-purpose` with a prompt telling it to read and
+   follow `.claude/agents/changelog-writer.md`'s instructions exactly; retry
+   the direct `changelog-writer` type on the next push.
+
+7. **Open the PR**, after confirming title/body with the user. Use the `gh`
    CLI:
    ```bash
    gh pr create --base main --head <type>/<description> --title "<title>" --body "<body>"
@@ -138,16 +155,18 @@ sanity check first, even though they asked for this workflow.
    - End the body with the attribution line this session uses for PR
      descriptions, if one is configured.
 
-7. **Report back** with the PR URL once created (`gh pr create` prints it).
+8. **Report back** with the PR URL once created (`gh pr create` prints it),
+   and note that the changelog entry from step 6 is generating in the
+   background if it hasn't reported back yet.
 
-8. **Write the run log** described above under "Logging", then let the user
+9. **Write the run log** described above under "Logging", then let the user
    know it was written (path is enough, no need to print the whole contents
    unless they ask).
 
 ## Notes
 
-- `gh` must be authenticated (`gh auth status`) for steps 5-6 to work — if
-  it's not, tell the user rather than trying workarounds.
+- `gh` must be authenticated (`gh auth status`) for steps 5 and 7 to work —
+  if it's not, tell the user rather than trying workarounds.
 - If the branch name would collide with one that already exists locally or on
   `origin`, append `-2`, `-3`, etc. rather than force-overwriting anything.
 - Never use `git push --force` in this workflow — these are always fresh
