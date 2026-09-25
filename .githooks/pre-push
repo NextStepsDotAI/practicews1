@@ -18,7 +18,13 @@ while read local_ref local_sha remote_ref remote_sha; do
     continue
   fi
 
-  branch=$(echo "$local_ref" | sed 's#refs/heads/##')
+  # Only branch pushes need a changelog entry — a tag push (refs/tags/...)
+  # or anything else under refs/ isn't a branch and shouldn't be mistaken
+  # for one just because it doesn't equal "main" after a no-op strip.
+  case "$local_ref" in
+    refs/heads/*) branch=${local_ref#refs/heads/} ;;
+    *) continue ;;
+  esac
 
   # main is normally updated via merged PRs, which already carried their
   # changelog entry on the feature branch — don't require another one here.

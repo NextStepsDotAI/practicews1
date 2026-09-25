@@ -16,7 +16,10 @@ A practice/learning workspace. Currently contains:
   to git (unlike `logs/`, this ships with the repo)
 - `reviews/<branch>/<short-sha>.md` — a code review per PR, written by the
   `pr-reviewer` subagent and gated on by the `pr-merge` skill before it will
-  merge; also committed to git as an audit trail
+  merge. Unlike `changelog/`, this is gitignored like `logs/` — it can't
+  cleanly ride along with the push it reviews (review runs *after* push, in
+  the background, and can take minutes), and `pr-merge` only ever needs to
+  read it locally, never from GitHub
 
 `git-branch-pr` creates/pushes branches and opens PRs; `pr-merge` (a
 separate skill) is what actually merges one, after checking CI status and a

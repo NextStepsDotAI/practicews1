@@ -2,6 +2,12 @@
 # "every skill logs its runs" convention) — not part of the shipped repo.
 logs/
 
+# pr-reviewer's output. Unlike changelog/, this can't cleanly ride along
+# with the push it reviews (the review runs *after* push, in the
+# background, and can take minutes) — so it stays local; pr-merge only
+# ever needs to read it from the working tree, never from GitHub.
+reviews/
+
 # OS noise
 .DS_Store
 Thumbs.db
