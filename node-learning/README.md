@@ -34,6 +34,7 @@ npm run start:01-modules  # run a single topic's example (swap the suffix)
 | `14-crypto` | Hashing, HMAC, random tokens via `crypto` |
 | `15-timers-eventloop` | Execution order of `nextTick`/Promises/timers |
 | `16-npm-packages` | `package.json`, semver, using a real dependency (`nanoid`) |
+| `17-glob-and-grep` | Finding files by pattern (`fs.globSync`) and searching their contents (a hand-rolled grep) |
 
 ## Scripts
 
