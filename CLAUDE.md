@@ -11,9 +11,17 @@ A practice/learning workspace. Currently contains:
 - `node-learning/` — a Node.js + TypeScript learning lab (see its own `CLAUDE.md`)
 - `.claude/skills/` — custom Claude Code skills usable across this whole repo
 - `.claude/agents/` — custom subagents usable across this whole repo (e.g.
-  `changelog-writer`)
+  `changelog-writer`, `pr-reviewer`)
 - `changelog/<branch>/<short-sha>.md` — a changelog entry per push, committed
   to git (unlike `logs/`, this ships with the repo)
+- `reviews/<branch>/<short-sha>.md` — a code review per PR, written by the
+  `pr-reviewer` subagent and gated on by the `pr-merge` skill before it will
+  merge; also committed to git as an audit trail
+
+`git-branch-pr` creates/pushes branches and opens PRs; `pr-merge` (a
+separate skill) is what actually merges one, after checking CI status and a
+current, non-stale `pr-reviewer` review with no unresolved blocking
+findings.
 
 ## One-time setup per clone: activate the pre-push hook
 

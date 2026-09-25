@@ -50,7 +50,7 @@ At the **start** of a run, generate a fresh UUID —
 in this repo), or `[guid]::NewGuid().ToString()` in PowerShell as a fallback
 — and hold onto it for the log filename. Create `logs/git-branch-pr/` if it
 doesn't exist yet. Write the log file as the **last step** of the run (step
-10 below), once the outcome is known — including on partial failure, so a
+11 below), once the outcome is known — including on partial failure, so a
 failed run is captured too, not just successful ones. Use this template:
 
 ```markdown
@@ -166,11 +166,21 @@ sanity check first, even though they asked for this workflow.
    - End the body with the attribution line this session uses for PR
      descriptions, if one is configured.
 
-9. **Report back** with the PR URL once created (`gh pr create` prints it).
-   Both the work and its changelog entry are already pushed by this point —
-   nothing left trailing.
+9. **Kick off a code review.** Dispatch the `pr-reviewer` subagent (Agent
+   tool, `subagent_type: pr-reviewer`) with the branch, base branch
+   (`main`), and repo root — it writes `reviews/<type>/<description>/
+   <short-sha>.md` on its own. Run it in the **background**
+   (`run_in_background: true`) — this is silent/advisory at this stage,
+   nothing here depends on its result, and `pr-merge` will re-check (or
+   re-run) it fresh before actually merging anyway. Don't report its
+   findings as if you already know them; you don't until it finishes.
 
-10. **Write the run log** described above under "Logging", then let the
+10. **Report back** with the PR URL once created (`gh pr create` prints
+    it). Both the work and its changelog entry are already pushed by this
+    point — nothing left trailing. Mention that a background code review
+    just kicked off too.
+
+11. **Write the run log** described above under "Logging", then let the
     user know it was written (path is enough, no need to print the whole
     contents unless they ask).
 
