@@ -52,6 +52,17 @@ function levelFor(eventName) {
   return /Failure|Denied/i.test(eventName) ? 'WARN ' : 'INFO ';
 }
 
+// Events fired inside an agent context carry agent_id. Real subagents
+// dispatched via the Agent tool also get a non-empty agent_type (e.g.
+// "changelog-writer"). The app's own internal helper agents (session-title
+// generation, etc.) carry agent_id but leave agent_type empty — that's the
+// only signal distinguishing them from user-dispatched subagent work, and
+// it can show up on any of the 33 event types those agents trigger, not
+// just SubagentStart/SubagentStop.
+function isInternalAgentEvent(input) {
+  return Boolean(input.agent_id) && !input.agent_type;
+}
+
 function formatDetails(input) {
   const parts = [];
   for (const [key, value] of Object.entries(input)) {
@@ -83,7 +94,8 @@ async function main() {
   await mkdir(dir, { recursive: true });
 
   const filePath = path.join(dir, `${sessionId}.log`);
-  const line = `${formatTimestamp(new Date())} ${levelFor(eventName)} [${eventName}] ${formatDetails(input)}\n`;
+  const tag = isInternalAgentEvent(input) ? `${eventName}:internal` : eventName;
+  const line = `${formatTimestamp(new Date())} ${levelFor(eventName)} [${tag}] ${formatDetails(input)}\n`;
 
   await appendFile(filePath, line, 'utf-8');
 }
