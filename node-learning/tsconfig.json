@@ -1,0 +1,21 @@
+{
+  // tsconfig.json controls how the TypeScript compiler (and ts-node/ts-jest,
+  // which read this same file) type-check and transpile this project.
+  "compilerOptions": {
+    "target": "ES2020",              // JS syntax level to compile down to (matches modern Node runtimes)
+    "module": "CommonJS",            // Node's default module system; keeps require()/ts-node simple
+    "moduleResolution": "node",      // resolve imports the same way Node's `require` does
+    "lib": ["ES2020"],               // built-in type definitions to include (no DOM, this is a backend project)
+    "outDir": "dist",                // where compiled .js would go if we ever run `tsc` directly
+    "rootDir": "src",                // source root, mirrored into outDir on build
+    "strict": true,                  // enables all strict type-checking options (recommended)
+    "esModuleInterop": true,         // allows `import express from 'express'` style default imports
+    "skipLibCheck": true,            // skip type-checking .d.ts files from node_modules (faster installs/builds)
+    "forceConsistentCasingInFileNames": true, // avoids cross-OS casing bugs (important on Windows)
+    "resolveJsonModule": true,       // allows `import data from './file.json'`
+    "declaration": false,            // we don't publish this as a library, so no .d.ts output needed
+    "sourceMap": true                // generate source maps for easier debugging
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
