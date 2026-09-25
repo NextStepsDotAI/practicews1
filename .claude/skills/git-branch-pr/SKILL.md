@@ -66,8 +66,29 @@ sanity check first, even though they asked for this workflow.
    commit message describing *why*, not just *what*. Skip this step entirely
    if everything is already committed.
 
+   After running the commit, don't assume it succeeded just because the
+   command was issued — confirm it with `git log -1 --oneline`. If a commit
+   (or any git command) gets interrupted mid-write, it can leave `.git/HEAD`
+   or a `refs/heads/<branch>` file corrupted (seen in practice: truncated to
+   null bytes), which makes git report "not a git repository" on the very
+   next command — looking like the whole repo is gone. It usually isn't: run
+   `git fsck --full` and check `.git/logs/HEAD` (the reflog) and the other
+   branch refs (e.g. `main`'s) first — they're stored as separate files and
+   often survive untouched. If `main` (or another known-good ref) still
+   resolves, you can typically repair the broken file by hand (write
+   `ref: refs/heads/<branch>` into `HEAD`, or the last-known commit SHA from
+   the reflog into the branch's ref file) rather than concluding work was
+   lost. Re-run `git fsck` after repairing to confirm the repo is sound
+   before continuing.
+
 5. **Push the branch**, after confirming with the user. Run
-   `git push -u origin <type>/<description>`.
+   `git push -u origin <type>/<description>`. If this fails with something
+   like `could not read Username for 'https://github.com'` or
+   `terminal prompts disabled`, git isn't wired to use `gh`'s stored login —
+   run `gh auth setup-git` once (safe to run any time, it just points git's
+   credential helper at `gh`) and retry the same push. Don't try other
+   interactive-auth workarounds; this is almost always the actual cause on a
+   machine where `gh auth status` already shows a logged-in account.
 
 6. **Open the PR**, after confirming title/body with the user. Use the `gh`
    CLI:
