@@ -1,0 +1,24 @@
+# Local audit-trail logs written by Claude Code skills (see root CLAUDE.md's
+# "every skill logs its runs" convention) — not part of the shipped repo.
+logs/
+
+# pr-reviewer's output. Unlike changelog/, this can't cleanly ride along
+# with the push it reviews (the review runs *after* push, in the
+# background, and can take minutes) — so it stays local; pr-merge only
+# ever needs to read it from the working tree, never from GitHub.
+reviews/
+
+# Every submitted prompt, logged per-session by the UserPromptSubmit hook
+# (.claude/hooks/log-prompt.mjs). Local only — prompts can contain anything,
+# including sensitive content, so this never ships with the repo.
+prompt/
+
+# Every one of the 33 Claude Code hook events, logged per-session by
+# .claude/hooks/log-event.mjs (wired to all 33 in settings.json). Local
+# only, same reasoning as prompt/ — also grows fast, since PreToolUse/
+# PostToolUse fire on every tool call.
+events/
+
+# OS noise
+.DS_Store
+Thumbs.db

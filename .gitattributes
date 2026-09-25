@@ -1,0 +1,4 @@
+# Git hook scripts must keep Unix line endings (LF) regardless of
+# core.autocrlf — a shebang line broken by CRLF can fail to execute on some
+# git-for-windows setups.
+.githooks/* text eol=lf

@@ -1,0 +1,56 @@
+#!/bin/sh
+# .githooks/pre-push
+#
+# Hard guarantee (not just a skill instruction) that a changelog entry can
+# never be left permanently orphaned behind a push: refuses to push any
+# non-main branch whose new commits don't touch changelog/ anywhere.
+#
+# This only takes effect once activated per clone via:
+#   git config core.hooksPath .githooks
+# (git doesn't auto-activate tracked hooks on clone — that one-time command
+# is documented in the root CLAUDE.md.)
+
+zero="0000000000000000000000000000000000000000"
+
+while read local_ref local_sha remote_ref remote_sha; do
+  # A deleted ref has local_sha all-zero — nothing to check.
+  if [ "$local_sha" = "$zero" ]; then
+    continue
+  fi
+
+  # Only branch pushes need a changelog entry — a tag push (refs/tags/...)
+  # or anything else under refs/ isn't a branch and shouldn't be mistaken
+  # for one just because it doesn't equal "main" after a no-op strip.
+  case "$local_ref" in
+    refs/heads/*) branch=${local_ref#refs/heads/} ;;
+    *) continue ;;
+  esac
+
+  # main is normally updated via merged PRs, which already carried their
+  # changelog entry on the feature branch — don't require another one here.
+  if [ "$branch" = "main" ]; then
+    continue
+  fi
+
+  if [ "$remote_sha" = "$zero" ]; then
+    # First push of a new branch — compare against where it diverged from main.
+    base=$(git merge-base main "$local_sha" 2>/dev/null)
+    if [ -z "$base" ]; then
+      base="main"
+    fi
+    range="$base..$local_sha"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+
+  changed=$(git diff --name-only "$range" -- changelog/)
+
+  if [ -z "$changed" ]; then
+    echo "pre-push: refusing to push '$branch' — no commit in this push touches changelog/." >&2
+    echo "Generate and commit a changelog entry first (see .claude/agents/changelog-writer.md" >&2
+    echo "and git-branch-pr's step 5-6), then push again." >&2
+    exit 1
+  fi
+done
+
+exit 0
