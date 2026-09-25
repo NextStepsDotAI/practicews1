@@ -38,9 +38,13 @@ from the git `pre-push` hook below, which fires on `git push` via
 - **All 33 hook events** → `.claude/hooks/log-event.mjs`, registered once
   per event name (with the matcher field omitted everywhere, which defaults
   to "match all" — so this works uniformly across events that support a
-  matcher and ones that don't) — appends every event's full raw JSON
-  payload to `events/<session_id>.md`. This grows fast: `PreToolUse` and
-  `PostToolUse` alone fire on every single tool call.
+  matcher and ones that don't) — appends one compact log line per event to
+  `events/<session_id>.log`, classic timestamped format (à la Apache
+  Commons Logging / log4j): `timestamp LEVEL [EventName] key=value ...`.
+  Fields common to every event (session_id, cwd, transcript_path, etc.) are
+  stripped so only each event's distinguishing info shows; `Failure`/
+  `Denied` events log at `WARN`, everything else at `INFO`. This grows
+  fast: `PreToolUse` and `PostToolUse` alone fire on every single tool call.
 
 Both scripts are deliberately silent on stdout and always exit 0 — several
 events treat exit-0 stdout as context/messages Claude sees, and firing on
