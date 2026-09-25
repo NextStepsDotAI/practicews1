@@ -182,3 +182,9 @@ sanity check first, even though they asked for this workflow.
   `origin`, append `-2`, `-3`, etc. rather than force-overwriting anything.
 - Never use `git push --force` in this workflow — these are always fresh
   branches, so a normal push is sufficient.
+- Steps 5-6 (changelog before push) are also enforced mechanically by
+  `.githooks/pre-push` (once activated per the root `CLAUDE.md`'s one-time
+  setup) — it rejects any push whose new commits don't touch `changelog/`.
+  Don't treat that as a reason to skip steps 5-6 deliberately and let the
+  hook catch it; the hook is a safety net for mistakes, not the primary
+  mechanism.

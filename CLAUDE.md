@@ -10,6 +10,24 @@ A practice/learning workspace. Currently contains:
 
 - `node-learning/` — a Node.js + TypeScript learning lab (see its own `CLAUDE.md`)
 - `.claude/skills/` — custom Claude Code skills usable across this whole repo
+- `.claude/agents/` — custom subagents usable across this whole repo (e.g.
+  `changelog-writer`)
+- `changelog/<branch>/<short-sha>.md` — a changelog entry per push, committed
+  to git (unlike `logs/`, this ships with the repo)
+
+## One-time setup per clone: activate the pre-push hook
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This repo tracks a `pre-push` hook (`.githooks/pre-push`) that refuses to
+push any non-`main` branch whose new commits don't touch `changelog/`
+anywhere — a hard, git-level guarantee that a changelog entry can never be
+left permanently orphaned behind a push. Git doesn't auto-activate tracked
+hooks on clone (that's a git limitation, not a choice), so this one command
+has to be run once per clone/machine before it takes effect. Without it,
+pushes work exactly as before, just without that safety net.
 
 ## Convention: every skill logs its runs
 
