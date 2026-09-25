@@ -50,7 +50,7 @@ At the **start** of a run, generate a fresh UUID —
 in this repo), or `[guid]::NewGuid().ToString()` in PowerShell as a fallback
 — and hold onto it for the log filename. Create `logs/git-branch-pr/` if it
 doesn't exist yet. Write the log file as the **last step** of the run (step
-8 below), once the outcome is known — including on partial failure, so a
+10 below), once the outcome is known — including on partial failure, so a
 failed run is captured too, not just successful ones. Use this template:
 
 ```markdown
@@ -75,8 +75,8 @@ failed run is captured too, not just successful ones. Use this template:
 
 ## Steps
 
-Work through these in order. Stop and confirm with the user before step 5 and
-step 7 — pushing and opening a PR are visible to others and worth a quick
+Work through these in order. Stop and confirm with the user before step 7 and
+step 8 — pushing and opening a PR are visible to others and worth a quick
 sanity check first, even though they asked for this workflow.
 
 1. **Check repo state.** Run `git status`. If there are uncommitted changes,
@@ -116,24 +116,19 @@ sanity check first, even though they asked for this workflow.
    lost. Re-run `git fsck` after repairing to confirm the repo is sound
    before continuing.
 
-5. **Push the branch**, after confirming with the user. Run
-   `git push -u origin <type>/<description>`. If this fails with something
-   like `could not read Username for 'https://github.com'` or
-   `terminal prompts disabled`, git isn't wired to use `gh`'s stored login —
-   run `gh auth setup-git` once (safe to run any time, it just points git's
-   credential helper at `gh`) and retry the same push. Don't try other
-   interactive-auth workarounds; this is almost always the actual cause on a
-   machine where `gh auth status` already shows a logged-in account.
-
-6. **Kick off a changelog entry.** Right after the push succeeds, dispatch
-   the `changelog-writer` subagent (Agent tool, `subagent_type:
+5. **Generate the changelog entry — before pushing.** Dispatch the
+   `changelog-writer` subagent (Agent tool, `subagent_type:
    changelog-writer`) with the branch name, base branch (`main`), and repo
-   root — it writes `changelog/<type>/<description>/<short-sha>.md` on its
-   own. Run it in the background (`run_in_background: true`) — nothing later
-   in this workflow depends on it, so there's no reason to block the PR step
-   waiting for it. Mention in the final report (step 9) that it's running
-   and will land shortly; don't fabricate its result before it actually
-   finishes.
+   root — it writes `changelog/<type>/<description>/<short-sha>.md` based on
+   the commit(s) made in step 4. Run it in the **foreground**
+   (`run_in_background: false`) — unlike most subagent work, the very next
+   step depends directly on its output file existing, so there's nothing to
+   gain from backgrounding it here. This has to happen *before* the push:
+   `changelog-writer` only writes the file, it doesn't commit or push
+   anything, and if the changelog entry isn't folded into this same push,
+   it's permanently a step behind — sitting uncommitted until some *later*,
+   unrelated push happens to sweep it up, which is a real bug this workflow
+   used to have.
 
    Note: this agent type takes a moment to become dispatchable right after
    its `.claude/agents/*.md` file is first created or edited in a session —
@@ -142,7 +137,23 @@ sanity check first, even though they asked for this workflow.
    follow `.claude/agents/changelog-writer.md`'s instructions exactly; retry
    the direct `changelog-writer` type on the next push.
 
-7. **Open the PR**, after confirming title/body with the user. Use the `gh`
+6. **Commit the changelog entry.** Stage the new file the agent just wrote
+   and commit it as its own small commit (e.g. "Add changelog entry for
+   `<type>/<description>`") — don't fold it into step 4's commit or amend
+   that commit, for the same reasons amending is avoided elsewhere in this
+   workflow. This commit rides along with step 4's in the same push next.
+
+7. **Push the branch**, after confirming with the user. Run
+   `git push -u origin <type>/<description>` — this single push now carries
+   both the work commit(s) and the changelog commit together. If this fails
+   with something like `could not read Username for 'https://github.com'` or
+   `terminal prompts disabled`, git isn't wired to use `gh`'s stored login —
+   run `gh auth setup-git` once (safe to run any time, it just points git's
+   credential helper at `gh`) and retry the same push. Don't try other
+   interactive-auth workarounds; this is almost always the actual cause on a
+   machine where `gh auth status` already shows a logged-in account.
+
+8. **Open the PR**, after confirming title/body with the user. Use the `gh`
    CLI:
    ```bash
    gh pr create --base main --head <type>/<description> --title "<title>" --body "<body>"
@@ -155,17 +166,17 @@ sanity check first, even though they asked for this workflow.
    - End the body with the attribution line this session uses for PR
      descriptions, if one is configured.
 
-8. **Report back** with the PR URL once created (`gh pr create` prints it),
-   and note that the changelog entry from step 6 is generating in the
-   background if it hasn't reported back yet.
+9. **Report back** with the PR URL once created (`gh pr create` prints it).
+   Both the work and its changelog entry are already pushed by this point —
+   nothing left trailing.
 
-9. **Write the run log** described above under "Logging", then let the user
-   know it was written (path is enough, no need to print the whole contents
-   unless they ask).
+10. **Write the run log** described above under "Logging", then let the
+    user know it was written (path is enough, no need to print the whole
+    contents unless they ask).
 
 ## Notes
 
-- `gh` must be authenticated (`gh auth status`) for steps 5 and 7 to work —
+- `gh` must be authenticated (`gh auth status`) for steps 7 and 8 to work —
   if it's not, tell the user rather than trying workarounds.
 - If the branch name would collide with one that already exists locally or on
   `origin`, append `-2`, `-3`, etc. rather than force-overwriting anything.

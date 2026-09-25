@@ -67,8 +67,12 @@ If any of these are missing, work them out yourself:
 
 - This is a factual record, not marketing copy — describe what actually
   changed, skip filler like "this exciting update."
+- You write the file only — you don't `git add`/commit/push it yourself.
+  The caller (typically `git-branch-pr`) is responsible for committing this
+  file and pushing it *in the same push* as the work it describes. If it
+  isn't, the entry is permanently a step behind, uncommitted, until some
+  unrelated later push happens to sweep it up — so don't be invoked after a
+  push has already happened; that ordering doesn't work.
 - Changelog entries are meant to be committed to git (unlike this repo's
   `logs/` folder, which is gitignored as a local audit trail) — don't add
-  `changelog/` to `.gitignore`, and don't be surprised if the branch you're
-  summarizing gets its changelog entry committed in a follow-up commit on
-  that same branch.
+  `changelog/` to `.gitignore`.
