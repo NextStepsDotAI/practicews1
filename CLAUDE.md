@@ -26,6 +26,18 @@ separate skill) is what actually merges one, after checking CI status and a
 current, non-stale `pr-reviewer` review with no unresolved blocking
 findings.
 
+## Prompt logging (Claude Code hook, not a git hook)
+
+`.claude/settings.json` wires a `UserPromptSubmit` hook
+(`.claude/hooks/log-prompt.mjs`) that appends every prompt you submit, in
+every session, to `prompt/<session_id>.md` at the repo root — one file per
+session, one appended entry per prompt. This is a Claude Code hook (fires on
+Claude's own lifecycle events, configured in `settings.json`), a different
+mechanism from the git `pre-push` hook below (fires on `git push`,
+configured via `core.hooksPath`) — don't confuse the two. `prompt/` is
+gitignored, same reasoning as `logs/`: local only, since prompts can contain
+anything.
+
 ## One-time setup per clone: activate the pre-push hook
 
 ```bash

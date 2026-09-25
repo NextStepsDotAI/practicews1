@@ -8,6 +8,11 @@ logs/
 # ever needs to read it from the working tree, never from GitHub.
 reviews/
 
+# Every submitted prompt, logged per-session by the UserPromptSubmit hook
+# (.claude/hooks/log-prompt.mjs). Local only — prompts can contain anything,
+# including sensitive content, so this never ships with the repo.
+prompt/
+
 # OS noise
 .DS_Store
 Thumbs.db
