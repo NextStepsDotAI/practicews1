@@ -1,0 +1,52 @@
+# feature/node-ts-practice-1.0 — bfb5abe
+
+- **Date:** 2026-09-25
+- **Base:** main
+- **Commits:** 8
+
+```
+bfb5abe Add pre-push hook enforcing every push carries a changelog entry
+75ee515 Add changelog entry for the workflow-ordering fix
+b62b1d3 Fix changelog-writer being dispatched after push, not before
+7c6d692 Add changelog entry for the changelog-writer/node-tutor push
+72de8a0 Add node-tutor skill, changelog-writer agent, and first changelog entry
+a856c09 Add repo-wide skill-logging convention
+6e87ea4 Harden git-branch-pr skill with lessons from its first real run
+0901840 Add node-learning TypeScript practice project and git-branch-pr skill
+```
+
+## Summary
+- Stood up `node-learning/`, a Node.js + TypeScript practice lab with 16
+  numbered topic folders (modules, fs, events, streams, async, an HTTP
+  server, an Express API, env handling, error handling, Jest testing, child
+  processes, cluster/worker threads, buffers, crypto, timers/event loop,
+  and npm packages), each with a source file and matching test, plus its
+  own `CLAUDE.md`, `README.md`, Jest/TS config, and package manifests.
+- Added the `git-branch-pr` skill for automating branch/commit/PR workflows,
+  hardened it based on lessons from its first real run, and added a
+  `node-tutor` skill (with a companion `/new-topic` command and settings)
+  to guide working through the learning lab topic by topic.
+- Added a `changelog-writer` agent that generates one changelog entry per
+  push, grounded in actual commits/diffs rather than copied commit
+  messages, and established a repo-wide convention that every skill logs
+  its runs to a gitignored `logs/<skill-name>/<uuid>.md`.
+- Fixed an ordering bug where `changelog-writer` was invoked after
+  `git push`, so its output never rode along with the push it described;
+  `git-branch-pr` now runs and commits the changelog entry *before*
+  pushing.
+- Turned that fix from a soft, skill-level guarantee into a hard one: added
+  a `.githooks/pre-push` hook (opt-in via `git config core.hooksPath
+  .githooks`) that rejects pushing any non-main branch whose new commits
+  don't touch `changelog/`, plus a `.gitattributes` rule forcing LF line
+  endings on `.githooks/*` so the hook's shebang survives on Windows.
+- Backfilled changelog entries along the way for earlier commits in this
+  same push (`72de8a0`, `a856c09`, `b62b1d3`) while exercising the new
+  changelog-writer agent itself.
+
+## Files changed
+54 files changed, 7090 insertions(+). Nearly all additions are new files:
+the `node-learning/` practice lab (source + tests for 16 topics, config,
+docs — including a large generated `package-lock.json`), two new skills
+(`git-branch-pr`, `node-tutor`), the `changelog-writer` agent, the
+`.githooks/pre-push` hook and `.gitattributes`, three prior changelog
+entries, and updates to the root `CLAUDE.md` and `.gitignore`.
