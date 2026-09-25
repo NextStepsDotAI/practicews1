@@ -13,6 +13,12 @@ reviews/
 # including sensitive content, so this never ships with the repo.
 prompt/
 
+# Every one of the 33 Claude Code hook events, logged per-session by
+# .claude/hooks/log-event.mjs (wired to all 33 in settings.json). Local
+# only, same reasoning as prompt/ — also grows fast, since PreToolUse/
+# PostToolUse fire on every tool call.
+events/
+
 # OS noise
 .DS_Store
 Thumbs.db

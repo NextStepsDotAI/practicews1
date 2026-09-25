@@ -26,17 +26,27 @@ separate skill) is what actually merges one, after checking CI status and a
 current, non-stale `pr-reviewer` review with no unresolved blocking
 findings.
 
-## Prompt logging (Claude Code hook, not a git hook)
+## Prompt and event logging (Claude Code hooks, not git hooks)
 
-`.claude/settings.json` wires a `UserPromptSubmit` hook
-(`.claude/hooks/log-prompt.mjs`) that appends every prompt you submit, in
-every session, to `prompt/<session_id>.md` at the repo root — one file per
-session, one appended entry per prompt. This is a Claude Code hook (fires on
-Claude's own lifecycle events, configured in `settings.json`), a different
-mechanism from the git `pre-push` hook below (fires on `git push`,
-configured via `core.hooksPath`) — don't confuse the two. `prompt/` is
-gitignored, same reasoning as `logs/`: local only, since prompts can contain
-anything.
+`.claude/settings.json` wires two Claude Code hooks (fire on Claude's own
+lifecycle events, configured in `settings.json` — a different mechanism
+from the git `pre-push` hook below, which fires on `git push` via
+`core.hooksPath`; don't confuse the two):
+
+- **`UserPromptSubmit`** → `.claude/hooks/log-prompt.mjs` — appends every
+  prompt you submit to `prompt/<session_id>.md`, one file per session.
+- **All 33 hook events** → `.claude/hooks/log-event.mjs`, registered once
+  per event name (with the matcher field omitted everywhere, which defaults
+  to "match all" — so this works uniformly across events that support a
+  matcher and ones that don't) — appends every event's full raw JSON
+  payload to `events/<session_id>.md`. This grows fast: `PreToolUse` and
+  `PostToolUse` alone fire on every single tool call.
+
+Both scripts are deliberately silent on stdout and always exit 0 — several
+events treat exit-0 stdout as context/messages Claude sees, and firing on
+every tool call means any output here would flood every turn. `prompt/` and
+`events/` are both gitignored, same reasoning as `logs/`: local only, since
+both can contain anything, including sensitive content.
 
 ## One-time setup per clone: activate the pre-push hook
 

@@ -10,9 +10,49 @@
               "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-prompt.mjs",
               "${CLAUDE_PROJECT_DIR}"
             ]
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs",
+              "${CLAUDE_PROJECT_DIR}"
+            ]
           }
         ]
       }
-    ]
+    ],
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "Setup": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "UserPromptExpansion": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PreToolUse": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PermissionRequest": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PermissionDenied": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PostToolUse": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PostToolUseFailure": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PostToolBatch": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "Notification": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "MessageDisplay": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "SubagentStart": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "SubagentStop": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "TaskCreated": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "TaskCompleted": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "StopFailure": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "TeammateIdle": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "InstructionsLoaded": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "ConfigChange": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "CwdChanged": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "DirectoryAdded": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "FileChanged": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "WorktreeCreate": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "WorktreeRemove": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PreCompact": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PostCompact": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PreModelSwitch": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "PostModelSwitch": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "Elicitation": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "ElicitationResult": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }],
+    "SessionEnd": [{ "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/log-event.mjs", "${CLAUDE_PROJECT_DIR}"] }] }]
   }
 }
