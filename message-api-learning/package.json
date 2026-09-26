@@ -1,0 +1,24 @@
+{
+  "name": "message-api-learning",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A topic-by-topic exploration of the Claude Messages API (TypeScript), used as a sandbox for practicing Claude Code features.",
+  "scripts": {
+    "start:01-core-message-api": "ts-node src/01-core-message-api/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "dotenv": "^18.0.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.6.2",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
